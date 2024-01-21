@@ -30,3 +30,8 @@ MyBatis的主要特点包括：<br>
 3. 创建了一个UserDao模拟数据库操作。
 4. 创建MapperProxy映射器与MapperProxyFactory映射器代理工厂实现动态代理。
 5. 模拟测试Mapper代理过程
+
+### 第二章
+&emsp;上一章节是通过动态代理将UserDao借口硬编码注入到MapperProxy中。这一章则是想通过MapperRegistry扫描dao包，
+将其下的Dao接口自动注入到MapperProxy中。<br>
+![img.png](static/Day02.png)

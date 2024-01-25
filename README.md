@@ -35,3 +35,11 @@ MyBatis的主要特点包括：<br>
 &emsp;上一章节是通过动态代理将UserDao借口硬编码注入到MapperProxy中。这一章则是想通过MapperRegistry扫描dao包，
 将其下的Dao接口自动注入到MapperProxy中。<br>
 ![img.png](static/Day02.png)
+
+### 第三章
+&emsp;&emsp;上一章实现了对dao包下Dao接口的自动读取与注入。使得后续使用某个Dao接口时不需要再一个一个手动注入。 <br>
+&emsp;&emsp;本章的目标则是实现读取 MyBatis 中 xml 文件中 SQL 语句的功能。
+1. 首先定义 SqlSessionFactoryBuilder 工厂建造者模式类，并使用 I/O 流对 XML 文件进行一个解析处理(这里以解析其中 SQL 语句为主)<br>
+2. 定义 Configuration 配置类，文件解析之后都会存放于此。
+3. 引入 DOM4j 依赖处理 xml 文件内容
+![img.png](static/SqlSessionFactoryBuilder.png)

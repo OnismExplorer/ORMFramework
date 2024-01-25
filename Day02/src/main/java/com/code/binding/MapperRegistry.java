@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 映射器注册表
  * 映射器注册器
  *
  * @author HeXin

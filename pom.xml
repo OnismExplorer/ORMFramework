@@ -12,6 +12,7 @@
   <modules>
     <module>Day01</module>
     <module>Day02</module>
+    <module>Day03</module>
   </modules>
 
   <properties>
@@ -32,5 +33,14 @@
       <artifactId>hutool-all</artifactId>
       <version>5.8.25</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
+    <!-- DOM4j 依赖-->
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>2.1.4</version>
+    </dependency>
+
   </dependencies>
 </project>

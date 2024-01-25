@@ -4,39 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a527be3a-593c-4b22-be8c-7b5e06e6f148" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/JavaSceneConfigState.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/intellij-javadocs-4.0.1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/4/442292b8a7efeabbe4cc176709b833b1792140ec" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/4/4/442292b8a7efeabbe4cc176709b833b1792140ec" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day01/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day01/src/main/java/com/code/binding/MapperProxy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day01/src/main/java/com/code/binding/MapperProxyFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day01/src/test/java/com/code/MapperProxyTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day01/src/test/java/com/code/dao/UserDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/binding/MapperProxy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/binding/MapperProxyFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/binding/MapperRegistry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/session/SqlSession.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/session/SqlSessionFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/session/defaults/DefaultSqlSession.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/session/defaults/DefaultSqlSessionFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/test/java/com/code/MapperFactoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/test/java/com/code/dao/StudentDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Day02/src/test/java/com/code/dao/UserDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/Day02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/mybatis.png" afterDir="false" />
+    <list default="true" id="a527be3a-593c-4b22-be8c-7b5e06e6f148" name="更改" comment="feat：第二章动态扫描dao包，将Dao接口自动注入到MapperProxy中">
+      <change afterPath="$PROJECT_DIR$/Day03/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/binding/MapperMethod.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/binding/MapperProxy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/binding/MapperProxyFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/binding/MapperRegistry.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/builder/BaseBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/builder/xml/XMLConfigBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/io/Resources.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/mapping/MappedStatement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/mapping/SqlCommandType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/session/Configuration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/session/SqlSession.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/session/SqlSessionFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/session/SqlSessionFactoryBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/session/defaults/DefaultSqlSession.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/main/java/com/code/session/defaults/DefaultSqlSessionFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/test/java/com/code/XMLConfigTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/test/java/com/code/dao/UserDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/test/java/com/code/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/test/resources/datasource.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Day03/src/test/resources/mapper/UserMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/SqlSessionFactoryBuilder.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/JavaSceneConfigState.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/JavaSceneConfigState.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Day02/src/main/java/com/code/binding/MapperRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/Day02/src/main/java/com/code/binding/MapperRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +45,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="mapper" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -62,6 +62,7 @@
       <MavenGeneralSettings>
         <option name="mavenHome" value="$PROJECT_DIR$/../../maven-3.9.0" />
         <option name="threads" value="1C" />
+        <option name="useMavenConfig" value="true" />
         <option name="userSettingsFile" value="E:\Develop\maven-3.9.0\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
@@ -84,30 +85,34 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
     "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "E:/Develop/JavaCode/ORMFramework/Day02/src/main/java/com/code/binding",
+    "last_directory_selection": "E:/Develop/JavaCode/ORMFramework/Day03/src/test/java/com/code",
+    "last_opened_file_path": "E:/Develop/JavaCode/ORMFramework/Day03",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "模块",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.fileTypes",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Develop\JavaCode\ORMFramework" />
       <recent name="E:\Develop\JavaCode\ORMFramework\Day02\src\main\java\com\code\binding" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Develop\JavaCode\ORMFramework\static" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.MapperFactoryTest.MapperProxyFactoryTest">
+  <component name="RunManager" selected="JUnit.XMLConfigTest.SqlSessionFactoryTest">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.code.App" />
       <module name="ORMFramework" />
@@ -169,8 +174,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="XMLConfigTest.SqlSessionFactoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Day03" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.code" />
+      <option name="MAIN_CLASS_NAME" value="com.code.XMLConfigTest" />
+      <option name="METHOD_NAME" value="SqlSessionFactoryTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.XMLConfigTest.SqlSessionFactoryTest" />
         <item itemvalue="JUnit.MapperFactoryTest.MapperProxyFactoryTest" />
         <item itemvalue="JUnit.MapperProxyTest.MapperProxyFactortyTest" />
         <item itemvalue="JUnit.MapperProxyTest.ProxyClassTest" />
@@ -194,8 +216,31 @@
       <workItem from="1705629716251" duration="1312000" />
       <workItem from="1705711566511" duration="3800000" />
       <workItem from="1705798628209" duration="9131000" />
-      <workItem from="1705808268390" duration="6938000" />
+      <workItem from="1705808268390" duration="12443000" />
+      <workItem from="1706158588731" duration="17696000" />
     </task>
+    <task id="LOCAL-00001" summary="feat：项目启动及第一章">
+      <created>1705826424995</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1705826424995</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat：项目启动及第一章">
+      <created>1705827069636</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1705827069636</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat：第二章动态扫描dao包，将Dao接口自动注入到MapperProxy中">
+      <created>1705827160565</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1705827160565</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -211,6 +256,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat：项目启动及第一章" />
+    <MESSAGE value="feat：第二章动态扫描dao包，将Dao接口自动注入到MapperProxy中" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat：第二章动态扫描dao包，将Dao接口自动注入到MapperProxy中" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

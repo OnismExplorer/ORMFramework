@@ -43,3 +43,8 @@ MyBatis的主要特点包括：<br>
 2. 定义 Configuration 配置类，文件解析之后都会存放于此。
 3. 引入 DOM4j 依赖处理 xml 文件内容
 ![img.png](static/SqlSessionFactoryBuilder.png)
+
+### 第四章
+&emsp;&emsp;上一章解析出 XML 文件中的 SQL 语句，将其进行了简单的处理和打印输出
+&emsp;&emsp;本章将读取 XML 文件中的数据库相关配置，结合读取出的 SQL 语句进行简单的 JDBC 操作
+![Day04](static/Day04.png)

@@ -8,11 +8,12 @@
   <packaging>pom</packaging>
 
   <name>ORMFramework</name>
-  <url>http://maven.apache.org</url>
+  <url>https://maven.apache.org</url>
   <modules>
     <module>Day01</module>
     <module>Day02</module>
     <module>Day03</module>
+    <module>Day04</module>
   </modules>
 
   <properties>
@@ -42,5 +43,22 @@
       <version>2.1.4</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.2.20</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>2.0.41</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>8.3.0</version>
+    </dependency>
   </dependencies>
 </project>

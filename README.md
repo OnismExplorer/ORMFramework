@@ -89,26 +89,55 @@ public class NoPoolingDataSourceFactory implements DataSourceFactory {
 ```java
 public class PoolConnection implements InvocationHandler {
 
-    public PoolConnection(Connection connection, PoolDataSource dataSource){
+    public PoolConnection(Connection connection, PoolDataSource dataSource) {
         // 初始化连接和数据源配置
     }
+
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) {
         String methodName = method.getName();
         // 若调用 close 关闭链接方法，则将链接加入至连接池中，并返回null
-        if(CLOSE.hashCode() == methodName.hashCode() && CLOSE.equals(methodName)){
+        if (CLOSE.hashCode() == methodName.hashCode() && CLOSE.equals(methodName)) {
             dataSource.pushConnection(this);
             return null;
         } else {
             // 否则执行原来的逻辑
-            if(!Object.class.equals(method.getDeclaringClass())){
+            if (!Object.class.equals(method.getDeclaringClass())) {
                 // 除 toString() 方法，其他方法调用之前要检查 connection 是否合法
                 checkConnection();
             }
         }
         // 其余方法则交给 connection 去调用
-        return method.invoke(realConnection,args);
+        return method.invoke(realConnection, args);
     }
 }
 
 ```
+
+### 第六章
+&emsp;&emsp;本章将定义和实现 SQL 执行器，目的在于将 DefaultSqlSession 中的 selectOne 方法进行解耦，方便后续维护和功能的扩展。
+&emsp;&emsp;之前是将全部的功能逻辑耦合在 DefaultSqlSession 中的 selectOne 方法中
+```java
+public record DefaultSqlSession(Configuration configuration) implements SqlSession {
+    // 其余方法...
+    @Override
+    public <T> T selectOne(String statement, Object parameter) {
+        try {
+            MappedStatement mappedStatement = configuration.getMappedStatement(statement);
+            Environment environment = configuration.getEnvironment();
+            Connection connection = environment.dataSource().getConnection();
+            BoundSql boundSql = mappedStatement.getBoundSql();
+            PreparedStatement preparedStatement = connection.prepareStatement(boundSql.sql());
+            preparedStatement.setLong(1, Long.parseLong(((Object[]) parameter)[0].toString()));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<T> objList = resultSet2Obj(resultSet, Class.forName(boundSql.resultType()));
+            return objList.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    // 其余方法...
+}
+```
+&emsp;而 MyBatis 中并不是这样做的，而是将上面的功能逻辑迁移出去，实现职责分离，提供一个专门的执行器。而 SqlSession 只是定义了一些标准的执行接口，而真正执行功能逻辑时是通过直接调用执行器。通过执行器实例化链接，进行参数化，并执行 SQL 语句，最终返回结果

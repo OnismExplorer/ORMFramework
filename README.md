@@ -46,5 +46,69 @@ MyBatis的主要特点包括：<br>
 
 ### 第四章
 &emsp;&emsp;上一章解析出 XML 文件中的 SQL 语句，将其进行了简单的处理和打印输出
-&emsp;&emsp;本章将读取 XML 文件中的数据库相关配置，结合读取出的 SQL 语句进行简单的 JDBC 操作
+&emsp;&emsp;本章将读取 XML 文件中的数据库相关配置，利用 Druid 连接池，结合读取出的 SQL 语句进行简单的 JDBC 操作
 ![Day04](static/Day04.png)
+
+### 第五章
+&emsp;&emsp;本章将在上一章的基础上，进一步探讨数据库连接管理的优化技术，主要集中在数据源池化技术的应用，包括有池化和无池化两种方式。在有池化的情况下，将介绍如何使用工厂模式获取数据源，通过合理的连接池管理，提高数据库连接的利用率和性能。同时，还将引入代理模式，以更灵活、安全地创建数据库连接。
+
+**1. 数据源池化技术：**
+
+&emsp;&emsp;在有池化的情况下，我们将通过维护一个连接池，避免频繁地打开和关闭数据库连接，从而提高系统的性能。连接池中的连接可以被重复利用，减少了连接的创建和销毁开销，同时也避免了连接资源被滥用。
+
+&emsp;&emsp;在无池化的情况下，每次需要连接数据库时都会创建新的连接，而在使用完毕后再关闭。这种方式的性能相对较差，因为连接的创建和销毁会消耗较多的资源，特别是在高并发的情况下。
+
+**2. 工厂模式获取数据源：**
+
+&emsp;&emsp;工厂模式是一种创建型设计模式，它提供了一种统一的接口，用于创建对象，但由子类决定要实例化的类。在数据库连接管理中，工厂模式可以用于动态获取数据源，根据配置或条件返回合适的连接池实现。
+
+```java
+public interface DataSourceFactory {
+    DataSource getDataSource();
+}
+
+public class PoolingDataSourceFactory implements DataSourceFactory {
+    @Override
+    public DataSource getDataSource() {
+        // 返回具体的池化数据源实现
+    }
+}
+
+public class NoPoolingDataSourceFactory implements DataSourceFactory {
+    @Override
+    public DataSource getDataSource() {
+        // 返回无池化的数据源实现
+    }
+}
+```
+
+**3. 代理模式创建连接：**
+
+&emsp;&emsp;代理模式可以用于在访问一个对象时引入一些附加的操作，例如在创建数据库连接时进行权限验证、性能监控等。在数据库连接管理中，代理模式可以帮助我们在连接被获取或释放时执行一些额外的逻辑。
+
+```java
+public class PoolConnection implements InvocationHandler {
+
+    public PoolConnection(Connection connection, PoolDataSource dataSource){
+        // 初始化连接和数据源配置
+    }
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        String methodName = method.getName();
+        // 若调用 close 关闭链接方法，则将链接加入至连接池中，并返回null
+        if(CLOSE.hashCode() == methodName.hashCode() && CLOSE.equals(methodName)){
+            dataSource.pushConnection(this);
+            return null;
+        } else {
+            // 否则执行原来的逻辑
+            if(!Object.class.equals(method.getDeclaringClass())){
+                // 除 toString() 方法，其他方法调用之前要检查 connection 是否合法
+                checkConnection();
+            }
+        }
+        // 其余方法则交给 connection 去调用
+        return method.invoke(realConnection,args);
+    }
+}
+
+```

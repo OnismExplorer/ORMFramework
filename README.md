@@ -45,7 +45,7 @@ MyBatis的主要特点包括：<br>
 ![img.png](static/SqlSessionFactoryBuilder.png)
 
 ### 第四章
-&emsp;&emsp;上一章解析出 XML 文件中的 SQL 语句，将其进行了简单的处理和打印输出
+&emsp;&emsp;上一章解析出 XML 文件中的 SQL 语句，将其进行了简单的处理和打印输出<br>
 &emsp;&emsp;本章将读取 XML 文件中的数据库相关配置，利用 Druid 连接池，结合读取出的 SQL 语句进行简单的 JDBC 操作
 ![Day04](static/Day04.png)
 
@@ -54,13 +54,13 @@ MyBatis的主要特点包括：<br>
 
 **1. 数据源池化技术：**
 
-&emsp;&emsp;在有池化的情况下，我们将通过维护一个连接池，避免频繁地打开和关闭数据库连接，从而提高系统的性能。连接池中的连接可以被重复利用，减少了连接的创建和销毁开销，同时也避免了连接资源被滥用。
+&emsp;&emsp;在有池化的情况下，我们将通过维护一个连接池，避免频繁地打开和关闭数据库连接，从而提高系统的性能。连接池中的连接可以被重复利用，减少了连接的创建和销毁开销，同时也避免了连接资源被滥用。<br>
 
-&emsp;&emsp;在无池化的情况下，每次需要连接数据库时都会创建新的连接，而在使用完毕后再关闭。这种方式的性能相对较差，因为连接的创建和销毁会消耗较多的资源，特别是在高并发的情况下。
+&emsp;&emsp;在无池化的情况下，每次需要连接数据库时都会创建新的连接，而在使用完毕后再关闭。这种方式的性能相对较差，因为连接的创建和销毁会消耗较多的资源，特别是在高并发的情况下。<br>
 
 **2. 工厂模式获取数据源：**
 
-&emsp;&emsp;工厂模式是一种创建型设计模式，它提供了一种统一的接口，用于创建对象，但由子类决定要实例化的类。在数据库连接管理中，工厂模式可以用于动态获取数据源，根据配置或条件返回合适的连接池实现。
+&emsp;&emsp;工厂模式是一种创建型设计模式，它提供了一种统一的接口，用于创建对象，但由子类决定要实例化的类。在数据库连接管理中，工厂模式可以用于动态获取数据源，根据配置或条件返回合适的连接池实现。<br>
 
 ```java
 public interface DataSourceFactory {
@@ -84,7 +84,7 @@ public class NoPoolingDataSourceFactory implements DataSourceFactory {
 
 **3. 代理模式创建连接：**
 
-&emsp;&emsp;代理模式可以用于在访问一个对象时引入一些附加的操作，例如在创建数据库连接时进行权限验证、性能监控等。在数据库连接管理中，代理模式可以帮助我们在连接被获取或释放时执行一些额外的逻辑。
+&emsp;&emsp;代理模式可以用于在访问一个对象时引入一些附加的操作，例如在创建数据库连接时进行权限验证、性能监控等。在数据库连接管理中，代理模式可以帮助我们在连接被获取或释放时执行一些额外的逻辑。<br>
 
 ```java
 public class PoolConnection implements InvocationHandler {
@@ -115,7 +115,7 @@ public class PoolConnection implements InvocationHandler {
 ```
 
 ### 第六章
-&emsp;&emsp;本章将定义和实现 SQL 执行器，目的在于将 DefaultSqlSession 中的 selectOne 方法进行解耦，方便后续维护和功能的扩展。
+&emsp;&emsp;本章将定义和实现 SQL 执行器，目的在于将 DefaultSqlSession 中的 selectOne 方法进行解耦，方便后续维护和功能的扩展。<br>
 &emsp;&emsp;之前是将全部的功能逻辑耦合在 DefaultSqlSession 中的 selectOne 方法中
 ```java
 public record DefaultSqlSession(Configuration configuration) implements SqlSession {
@@ -140,4 +140,26 @@ public record DefaultSqlSession(Configuration configuration) implements SqlSessi
     // 其余方法...
 }
 ```
-&emsp;而 MyBatis 中并不是这样做的，而是将上面的功能逻辑迁移出去，实现职责分离，提供一个专门的执行器。而 SqlSession 只是定义了一些标准的执行接口，而真正执行功能逻辑时是通过直接调用执行器。通过执行器实例化链接，进行参数化，并执行 SQL 语句，最终返回结果
+&emsp;&emsp;而 MyBatis 中并不是这样做的，而是将上面的功能逻辑迁移出去，实现职责分离，提供一个专门的执行器。而 SqlSession 只是定义了一些标准的执行接口，而真正执行功能逻辑时是通过直接调用执行器。通过执行器实例化链接，进行参数化，并执行 SQL 语句，最终返回结果。
+
+### 第七章
+&emsp;&emsp;前面几章在实现数据源池化时，对于属性信息的获取都是采用直接硬编码的方式。
+```java
+public class PoolDataSourceFactory extends UnpoolDataSourceFactory {
+    
+    @Override
+    public DataSource getDataSource() {
+        PoolDataSource dataSource = new PoolDataSource();
+        dataSource.setDriver(properties.getProperty("driver"));
+        dataSource.setUrl(properties.getProperty("url"));
+        dataSource.setUsername(properties.getProperty("username"));
+        dataSource.setPassword(properties.getProperty("password"));
+        return dataSource;
+    }
+}
+```
+&emsp;&emsp;对于上面的 username、password 等都是标准的字段，采用硬编码方式获取并非不对。但其实除了这些字段以外，可能有时候还需要配置一些扩展字段，这时如果再通过硬编码的方式进行获取，每次都需要修改大量代码，而且容易产生大量冗余。
+这时便可以利用反射，实现一个反射工具包，完成一个对象的属性的反射填充。
+&emsp;&emsp;若需要对一个对象的所提供的属性进行统一的设置和获取值的操作，那么就需要把当前这个被处理的对象进行解耦，提取所有的属性和方法，并按照不同的类型进行反射处理，从而包装成一个工具包。
+&emsp;&emsp;对于一个对象，整个的设计过程都是围绕拆解对象提供反射操作为主，即所包括的有对象的构造函数、对象的属性、对象的方法。而对象的方法基本上都是获取和设置值的操作(故为get、set处理)，则将这些方法在对象拆解的过程中摘取出来进行保存。
+当真正需要对对象进行操作时，则会依赖于已经实例化的对象，将其进行属性处理。处理过程是使用 JDK 所提供的反射进行操作，在反射过程中的方法名称、入参类型的都已经被拆解和处理，在最终使用时直接调用即可。

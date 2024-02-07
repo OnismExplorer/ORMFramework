@@ -116,7 +116,7 @@ public class PoolConnection implements InvocationHandler {
 
 ### 第六章
 &emsp;&emsp;本章将定义和实现 SQL 执行器，目的在于将 DefaultSqlSession 中的 selectOne 方法进行解耦，方便后续维护和功能的扩展。<br>
-&emsp;&emsp;之前是将全部的功能逻辑耦合在 DefaultSqlSession 中的 selectOne 方法中
+&emsp;&emsp;之前是将全部的功能逻辑耦合在 DefaultSqlSession 中的 selectOne 方法中。
 ```java
 public record DefaultSqlSession(Configuration configuration) implements SqlSession {
     // 其余方法...
@@ -158,8 +158,44 @@ public class PoolDataSourceFactory extends UnpoolDataSourceFactory {
     }
 }
 ```
-&emsp;&emsp;对于上面的 username、password 等都是标准的字段，采用硬编码方式获取并非不对。但其实除了这些字段以外，可能有时候还需要配置一些扩展字段，这时如果再通过硬编码的方式进行获取，每次都需要修改大量代码，而且容易产生大量冗余。
-这时便可以利用反射，实现一个反射工具包，完成一个对象的属性的反射填充。
-&emsp;&emsp;若需要对一个对象的所提供的属性进行统一的设置和获取值的操作，那么就需要把当前这个被处理的对象进行解耦，提取所有的属性和方法，并按照不同的类型进行反射处理，从而包装成一个工具包。
-&emsp;&emsp;对于一个对象，整个的设计过程都是围绕拆解对象提供反射操作为主，即所包括的有对象的构造函数、对象的属性、对象的方法。而对象的方法基本上都是获取和设置值的操作(故为get、set处理)，则将这些方法在对象拆解的过程中摘取出来进行保存。
-当真正需要对对象进行操作时，则会依赖于已经实例化的对象，将其进行属性处理。处理过程是使用 JDK 所提供的反射进行操作，在反射过程中的方法名称、入参类型的都已经被拆解和处理，在最终使用时直接调用即可。
+&emsp;&emsp;对于上面的 username、password 等都是标准的字段，采用硬编码方式获取并非不对。但其实除了这些字段以外，可能有时候还需要配置一些扩展字段，这时如果再通过硬编码的方式进行获取，每次都需要修改大量代码，而且容易产生大量冗余。<br>
+这时便可以利用反射，实现一个反射工具包，完成一个对象的属性的反射填充。<br>
+&emsp;&emsp;若需要对一个对象的所提供的属性进行统一的设置和获取值的操作，那么就需要把当前这个被处理的对象进行解耦，提取所有的属性和方法，并按照不同的类型进行反射处理，从而包装成一个工具包。<br>
+&emsp;&emsp;对于一个对象，整个的设计过程都是围绕拆解对象提供反射操作为主，即所包括的有对象的构造函数、对象的属性、对象的方法。而对象的方法基本上都是获取和设置值的操作(故为get、set处理)，则将这些方法在对象拆解的过程中摘取出来进行保存。<br>
+当真正需要对对象进行操作时，则会依赖于已经实例化的对象，将其进行属性处理。处理过程是使用 JDK 所提供的反射进行操作，在反射过程中的方法名称、入参类型的都已经被拆解和处理，在最终使用时直接调用即可。<br>
+
+### 第八章
+ &emsp;&emsp;在前面的几个章节中关于 ORM 框架的大部分核心结构已经逐渐表现出来(其中就包括解析 XML 文件和 SQL 语句，SQL 语句的绑定，语句映射，事务处理，语句执行，配置不同数据源等)。<br>
+ &emsp;&emsp;但是随着框架越来越多功能的逐步完善，需要对模块内部的实现进行细分处理，并不是单单通过硬编码的方式完成功能逻辑，而是使用设计原则进行拆分和解耦，满足代码的易维护性和可拓展性。<br>
+ &emsp;&emsp;本章节将先从 XML 解析的问题，将之前的硬编码实现方式细化，满足在解析时对一些参数的整合和处理。<br>
+ &emsp;&emsp;之前的 XML 解析代码是将所有的解析都放在一个循环中进行处理，并且只能解析 environment 与 mapper 配置，后续当要解析其他配置时需要添加和修改大量的代码，这样会大大增加之后的维护成本(XMLConfigBuilder 类)。
+```java
+public class XMLConfigBuilder extends BaseBuilder {
+    // 其他的代码
+    public Configuration parse(){
+        // 解析映射器
+        try {
+            // 环境
+            environmentsElement(root.element("environments"));
+            // 解析映射器
+            mapperElement(root.element("mappers"));
+        } catch (Exception e) {
+            throw new RuntimeException("SQL 映射器解析错误，造成的原因是："+e);
+        }
+        return configuration;
+    }
+
+    private void environmentsElement(Element context) throws Exception {
+        // 具体代码实现...
+    }
+
+
+    private void mapperElement(Element mappers) throws Exception{
+        // 具体代码实现...
+    }
+    // 其他的代码
+}
+```
+而本章则是在整个解析过程中引入映射构建器( XMLMapperBuilder )、语句构建器( XMLStatementBuilder )，按照其不同的职责进行解析<br>
+同时在 XMLStatementBuilder 中引入了脚本语言驱动器(默认实现的是 XML 语言驱动器 XMLLanguageDriver )，该类具体操作静态和动态 SQL 语句节点的解析(这里参照 MyBatis 源码使用 Ognl 的方式进行处理，其对应的类是 DynamicContext)。
+ 

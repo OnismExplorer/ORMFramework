@@ -37,5 +37,5 @@ public interface  SqlSession {
      *
      * @return {@link Configuration}
      */
-    Configuration configuration();
+    Configuration getConfiguration();
 }

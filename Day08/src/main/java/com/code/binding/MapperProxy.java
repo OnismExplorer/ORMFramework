@@ -64,7 +64,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
         MapperMethod mapperMethod = methodCache.get(method);
         if(mapperMethod == null){
             // 找不到方法则新建方法
-            mapperMethod = new MapperMethod(mapperInterface, method, sqlSession.configuration());
+            mapperMethod = new MapperMethod(mapperInterface, method, sqlSession.getConfiguration());
             // 将其再放入缓存
             methodCache.put(method,mapperMethod);
         }

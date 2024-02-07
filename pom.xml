@@ -17,6 +17,7 @@
     <module>Day05</module>
     <module>Day06</module>
     <module>Day07</module>
+    <module>Day08</module>
   </modules>
 
   <properties>
@@ -65,6 +66,11 @@
       <version>5.1.48</version>
     </dependency>
 
-
+    <!-- https://mvnrepository.com/artifact/ognl/ognl -->
+    <dependency>
+      <groupId>ognl</groupId>
+      <artifactId>ognl</artifactId>
+      <version>3.3.2</version>
+    </dependency>
   </dependencies>
 </project>

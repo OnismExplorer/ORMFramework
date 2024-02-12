@@ -265,3 +265,47 @@ public class PreparedStatementHandler extends BaseStatementHandler{
  where id = #{id} AND username = #{username}
 </select>
 ```
+
+### 第十章
+&emsp;&emsp;上章节对 SQL 语句中的参数进行了封装和调用，则本章节将对执行完 SQL 语句结果进行封装和处理，当然这里也会使用到策略模式。而不是像之前使用硬编码的方式进行封装<br>
+```java
+public class DefaultResultSetHandler implements ResultSetHandler{
+    
+    @Override
+    public <E> List<E> handleResultSets(Statement statement) throws SQLException {
+        ResultSet resultSet = statement.getResultSet();
+        return resultSet2Obj(resultSet,mappedStatement.getResultType());
+    }
+    
+    private <T> List<T> resultSet2Obj(ResultSet resultSet, Class<?> clazz) {
+        List<T> list = new ArrayList<>();
+        try {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            // 每次遍历行值
+            while (resultSet.next()) {
+                T obj = (T) clazz.getDeclaredConstructor().newInstance();
+                for (int i = 1; i <= columnCount; i++) {
+                    Object value = resultSet.getObject(i);
+                    String columnName = metaData.getColumnName(i);
+                    String setMethod = "set" + columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
+                    Method method;
+                    if (value instanceof Timestamp) {
+                        method = clazz.getMethod(setMethod, Date.class);
+                    } else {
+                        method = clazz.getMethod(setMethod, value.getClass());
+                    }
+                    method.invoke(obj, value);
+                }
+                list.add(obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+}
+```
+&emsp;&emsp;这里对于结果集的封装与处理，核心在于拿到 Mapper XML 中所配置的返回类型，将其解析后把从数据库查询到的结果反射到类型实例化对象上。<br>
+&emsp;&emsp;在这个过程中，不仅需要满足不同返回类型的处理(如 Long、Double、String等)，还需要考虑返回结果的类型(普通基本类型、封装对象类型)，并且查询结果可以是记录，也有可能是多条...<br>
+&emsp;&emsp;为了解决这些不同情况下的问题，则需要对流程多少分治和实现，已经在此过程中进行抽象化解耦，这样才满足于将不同的返回信息封装到对应的对象中去。<br>

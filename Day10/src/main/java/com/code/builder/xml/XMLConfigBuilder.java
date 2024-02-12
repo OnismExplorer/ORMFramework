@@ -3,10 +3,7 @@ package com.code.builder.xml;
 import com.code.builder.BaseBuilder;
 import com.code.datasource.DataSourceFactory;
 import com.code.io.Resources;
-import com.code.mapping.BoundSql;
 import com.code.mapping.Environment;
-import com.code.mapping.MappedStatement;
-import com.code.mapping.SqlCommandType;
 import com.code.session.Configuration;
 import com.code.transaction.TransactionFactory;
 import org.dom4j.Document;
@@ -19,8 +16,6 @@ import javax.sql.DataSource;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * XML 配置构建器
@@ -101,7 +96,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             InputStream inputStream = Resources.getResourceAsStream(resource);
 
             // 在循环中每个 mapper 都重新创建一个 XMLMapperBuilder 进行解析
-            XmLMapperBuilder mapperBuilder = new XmLMapperBuilder(inputStream, configuration, resource);
+            XMLMapperBuilder mapperBuilder = new XMLMapperBuilder(inputStream, configuration, resource);
             mapperBuilder.parse();
         }
     }

@@ -53,7 +53,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
             if (constructorArgTypes == null || constructorArgs == null) {
                 constructor = type.getDeclaredConstructor();
                 // 如果构造函数不可访问，则设置为可访问
-                if (!constructor.canAccess(constructor)) {
+                if (!constructor.isAccessible()) {
                     constructor.setAccessible(true);
                 }
                 // 调用构造函数并返回实例化对象
@@ -63,7 +63,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
             // 如果传入构造函数参数类型和值，则调用指定构造函数
             constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[0]));
             // 如果构造函数不可访问，则设置为可访问
-            if (!constructor.canAccess(constructor)) {
+            if (!constructor.isAccessible()) {
                 constructor.setAccessible(true);
             }
             // 调用构造函数并返回实例化对象

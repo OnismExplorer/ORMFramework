@@ -198,4 +198,70 @@ public class XMLConfigBuilder extends BaseBuilder {
 ```
 而本章则是在整个解析过程中引入映射构建器( XMLMapperBuilder )、语句构建器( XMLStatementBuilder )，按照其不同的职责进行解析<br>
 同时在 XMLStatementBuilder 中引入了脚本语言驱动器(默认实现的是 XML 语言驱动器 XMLLanguageDriver )，该类具体操作静态和动态 SQL 语句节点的解析(这里参照 MyBatis 源码使用 Ognl 的方式进行处理，其对应的类是 DynamicContext)。
+
+### 第九章
+&emsp;&emsp;上章通过细化 XML 语句构建器，解耦在解析 XML 中的所需处理的 Mapper 信息(如 SQL 语句，入参、出参，类型)，并将这些信息都记录到 ParameterMapping 参数映射处理类中<br>
+&emsp;&emsp;该章则将解析这部分的参数的提取，将对执行的 SQL 进行参数的自动化设置，而不像之前一样将参数进行硬编码。<br>
+```java
+public class PreparedStatementHandler extends BaseStatementHandler{
+ // 其他方法...
+ @Override
+ public void parameterize(Statement statement) throws SQLException {
+  PreparedStatement preparedStatement = (PreparedStatement) statement;
+  // 将参数硬编码进行设置
+  preparedStatement.setLong(1,Long.parseLong(((Object[]) parameterObject)[0].toString()));
+ }
+}
+```
+&emsp;&emsp;上述代码的执行流程是：通过默认 SQL 会话实现类( DefaultSqlSession )中的 selectOne 方法调用执行器 (executor) 。
+```java
+public class DefaultSqlSession implements SqlSession {
+
+ private Executor executor;
  
+ // 其他方法...
+ 
+ @Override
+ public <T> T selectOne(String statement, Object parameter) {
+  MappedStatement mappedStatement = configuration.getMappedStatement(statement);
+  List<T> list = executor.query(mappedStatement, parameter, Executor.NO_RESULT_HANDLER, mappedStatement.getSqlSource().getBoundSql(parameter));
+  return list.get(0);
+ }
+}
+```
+&emsp;&emsp;并通过预处理语句处理器( PrepareStatementHandler )执行参数设置和结果查询。<br>
+```java
+public class PreparedStatementHandler extends BaseStatementHandler{
+ // 其他方法...
+
+ @Override
+ protected Statement instantiateStatement(Connection connection) throws SQLException {
+  return connection.prepareStatement(boundSql.getSql());
+ }
+ 
+ @Override
+ public void parameterize(Statement statement) throws SQLException {
+  PreparedStatement preparedStatement = (PreparedStatement) statement;
+  // 将参数硬编码进行设置
+  preparedStatement.setLong(1,Long.parseLong(((Object[]) parameterObject)[0].toString()));
+ }
+ 
+}
+```
+&emsp;&emsp;目前这个流程中是通过硬编码的方式处理参数信息，即每个 SQL 执行时，那些 `?号` 需要被替换的地方。现在需要解决的问题则是将硬编码变为自动化参数设置，将这些参数的解析，使用策略模式，针对不同类型参数进行不同的参数设置( 即使用 JDBC 直接操作数据库时，使用 ps.setXXX(i,parameter)设置各类参数，如 Long 则调用 ps.setLong()、String 则调用 ps.setString() )。在解析 SQL 时按照不同的执行策略，封装类型处理器(即实现 TypeHandler 结果)<br>
+&emsp;&emsp;之前代码只能解析与执行下面的 SQL 语句<br>
+```xml
+<select id="getNameById" parameterType="java.lang.Long" resultType="com.code.entity.User">
+ SELECT id, username, password, avatar
+ FROM user
+ where id = #{id}
+</select>
+```
+&emsp;&emsp;而本章目标实现后，即可解析并执行下面较为复杂的 SQL 语句<br>
+```xml
+<select id="getUser" parameterType="com.code.entity.User" resultType="com.code.entity.User">
+ SELECT id, username, password, avatar
+ FROM user
+ where id = #{id} AND username = #{username}
+</select>
+```

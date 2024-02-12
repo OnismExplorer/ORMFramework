@@ -1,6 +1,14 @@
 package com.code.entity;
 
 public class User {
+    public User() {
+    }
+
+    public User(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     private Long id;
     private String username;
     private String password;

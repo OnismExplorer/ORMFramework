@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code.dao.UserDao">
+
+    <select id="getNameById" parameterType="java.lang.Long" resultType="com.code.entity.User">
+        SELECT id, username, password, avatar
+        FROM user
+        where id = #{id}
+    </select>
+
+    <select id="getUser" parameterType="com.code.entity.User" resultType="com.code.entity.User">
+        SELECT id, username, password, avatar
+        FROM user
+        where id = #{id} AND username = #{username}
+    </select>
+</mapper>

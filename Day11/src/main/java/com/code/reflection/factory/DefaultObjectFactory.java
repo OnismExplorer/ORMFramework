@@ -128,6 +128,6 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
     @Override
     public <T> boolean isCollection(Class<T> type) {
-        return false;
+        return Collection.class.isAssignableFrom(type);
     }
 }

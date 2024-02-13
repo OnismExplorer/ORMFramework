@@ -32,48 +32,40 @@ public class GenericTokenParser {
      * @return 解析后的文本
      */
     public String parse(String text) {
-        if (text == null || text.isEmpty()) {
-            return "";
-        }
-
         StringBuilder builder = new StringBuilder();
-        char[] src = text.toCharArray();
-        int offset = 0;
-        boolean foundToken = false;
-
-        while (offset < src.length) {
+        if (text != null && text.length() > 0) {
+            char[] src = text.toCharArray();
+            int offset = 0;
             int start = text.indexOf(openToken, offset);
-
-            if (start == -1) {
-                // 没有找到占位符，将剩余文本添加到 builder 中并结束循环
-                builder.append(src, offset, src.length - offset);
-            } else {
-                // 处理占位符前的内容
-                builder.append(src, offset, start - offset);
-                offset = start + openToken.length();
-
-                int end = text.indexOf(closeToken, offset);
-
-                if (end == -1) {
-                    // 没有找到占位符的结束位置，将剩余文本添加到 builder 中并结束循环
-                    builder.append(src, offset, src.length - offset);
+            // #{favouriteSection,jdbcType=VARCHAR}
+            // 这里是循环解析参数，参考GenericTokenParserTest,比如可以解析${first_name} ${initial} ${last_name} reporting.这样的字符串,里面有3个${}
+            while (start > -1) {
+                //判断一下 ${ 前面是否是反斜杠，这个逻辑在老版的mybatis中（如3.1.0）是没有的
+                if (start > 0 && src[start - 1] == '\\') {
+                    // the variable is escaped. remove the backslash.
+                    // 新版已经没有调用substring了，改为调用如下的offset方式，提高了效率
+                    builder.append(src, offset, start - offset - 1).append(openToken);
+                    offset = start + openToken.length();
                 } else {
-                    // 获取占位符的内容，使用处理器处理，并将结果添加到 builder 中
-                    String content = new String(src, offset, end - offset);
-                    builder.append(handler.handleToken(content));
-
-                    // 更新 offset 到占位符结束位置的位置
-                    offset = end + closeToken.length();
-                    foundToken = true;
+                    int end = text.indexOf(closeToken, start);
+                    if (end == -1) {
+                        builder.append(src, offset, src.length - offset);
+                        offset = src.length;
+                    } else {
+                        builder.append(src, offset, start - offset);
+                        offset = start + openToken.length();
+                        String content = new String(src, offset, end - offset);
+                        // 得到一对大括号里的字符串后，调用handler.handleToken,比如替换变量这种功能
+                        builder.append(handler.handleToken(content));
+                        offset = end + closeToken.length();
+                    }
                 }
+                start = text.indexOf(openToken, offset);
             }
-
-            // 如果找到了占位符，结束循环
-            if (foundToken) {
-                break;
+            if (offset < src.length) {
+                builder.append(src, offset, src.length - offset);
             }
         }
-
         return builder.toString();
     }
 

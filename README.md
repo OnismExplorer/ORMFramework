@@ -309,3 +309,11 @@ public class DefaultResultSetHandler implements ResultSetHandler{
 &emsp;&emsp;这里对于结果集的封装与处理，核心在于拿到 Mapper XML 中所配置的返回类型，将其解析后把从数据库查询到的结果反射到类型实例化对象上。<br>
 &emsp;&emsp;在这个过程中，不仅需要满足不同返回类型的处理(如 Long、Double、String等)，还需要考虑返回结果的类型(普通基本类型、封装对象类型)，并且查询结果可以是记录，也有可能是多条...<br>
 &emsp;&emsp;为了解决这些不同情况下的问题，则需要对流程多少分治和实现，已经在此过程中进行抽象化解耦，这样才满足于将不同的返回信息封装到对应的对象中去。<br>
+
+### 第十一章
+&emsp;&emsp;随着之前章节的推进，已经逐步实现了一个基本的框架结构，不过也仅仅只是能满足基本的查询操作，并将查询出来的结果进行封装处理。<br>
+&emsp;&emsp;该章节则是补全 CRUD 接口中的 C( create )、U( update )、D( delete ) ，但是除了 select 是对数据的查询以外，其他三个都是基于数据信息的修改( update )。<br>
+&emsp;&emsp;所以这部分处理 SQL 的操作，即在 SqlSession 定义新的接口，然后通知映射器方法 MapperMethod 调用和处理这些接口。<br>
+
+&emsp;&emsp;<br>
+&emsp;&emsp;<br>

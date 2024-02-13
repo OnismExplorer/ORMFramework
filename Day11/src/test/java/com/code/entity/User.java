@@ -9,6 +9,13 @@ public class User {
         this.username = username;
     }
 
+    public User(Long id, String username, String password, String avatar) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.avatar = avatar;
+    }
+
     private Long id;
     private String username;
     private String password;

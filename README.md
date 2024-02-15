@@ -315,5 +315,8 @@ public class DefaultResultSetHandler implements ResultSetHandler{
 &emsp;&emsp;该章节则是补全 CRUD 接口中的 C( create )、U( update )、D( delete ) ，但是除了 select 是对数据的查询以外，其他三个都是基于数据信息的修改( update )。<br>
 &emsp;&emsp;所以这部分处理 SQL 的操作，即在 SqlSession 定义新的接口，然后通知映射器方法 MapperMethod 调用和处理这些接口。<br>
 
-&emsp;&emsp;<br>
-&emsp;&emsp;<br>
+### 第十二章
+&emsp;&emsp;前面十一章节只是满足了在使用框架时的基本需求。但在平时使用 MyBatis 框架进行开发时，除了可以基于之前的 Mapper XML 方式进行设置数据库与 SQL 语句以外，也可以通过注解的方式直接在 DAO 接口方法上配置并执行 SQL 语句。<br>
+&emsp;&emsp;大多数情况下，都会将 SQL 语句统一管理和维护在 XML 文件中，这样即使已经部署后也能够基于 XML 配置变更 SQL 语句。<br>
+&emsp;&emsp;在一些简单的场景下，使用注解直接维护 SQL 信息在对应的 DAO 接口上比维护 XML 文件中的 SQL 文件更加便捷。<br>
+&emsp;&emsp;所以本章则将基于前面开发后的基础上，实现配置方法注解的方式处理 CRUD 操作。<br>

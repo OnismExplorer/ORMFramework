@@ -19,7 +19,10 @@
 
 
     <mappers>
-        <mapper resource="mapper/UserMapper.xml"/>
+        <!-- 注解配置 -->
+        <mapper class="com.code.dao.UserDao"/>
+        <!-- XML 配置 -->
+<!--        <mapper resource="mapper/UserMapper.xml"/>-->
     </mappers>
 
 </configuration>

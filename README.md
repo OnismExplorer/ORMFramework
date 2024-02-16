@@ -320,3 +320,9 @@ public class DefaultResultSetHandler implements ResultSetHandler{
 &emsp;&emsp;大多数情况下，都会将 SQL 语句统一管理和维护在 XML 文件中，这样即使已经部署后也能够基于 XML 配置变更 SQL 语句。<br>
 &emsp;&emsp;在一些简单的场景下，使用注解直接维护 SQL 信息在对应的 DAO 接口上比维护 XML 文件中的 SQL 文件更加便捷。<br>
 &emsp;&emsp;所以本章则将基于前面开发后的基础上，实现配置方法注解的方式处理 CRUD 操作。<br>
+
+### 第十三章
+&emsp;&emsp;到这里，目前框架已经能够满足一定的开发使用的基本要求。<br>
+&emsp;&emsp;因为命名规范的不同，数据库是按照小写英文字母和下划线的形式组合使用(例如，task_name)，而 Java 代码中则是采用驼峰方式进行命名(例如，taskName)，所以会导致一些字段无法进行一一对应。<br>
+&emsp;&emsp;这便是下一个需要解决的问题，在使用 Mybatis 时，如果遇到这种字段，则需要把数据库表中的下划线字段名称映射成 Java 代码中的驼峰字段，这样才能正确的将数据库中的结果映射到 Java 代码的返回对象。<br>
+&emsp;&emsp;在前面章节处理解析 Mapper XML 中的 select 语句下配置的 resultType 时，其实就已经添加了 ResultMap、ResultMapping 的映射结构。但是在前面章节对于返回类型的处理都直接是对象类型，没有使用映射类型。为了做统一的方式处理，才会采用这样通用的结果类型包装结构。<br>

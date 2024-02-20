@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code.dao.TaskDao">
+    <resultMap id="taskMap" type="com.code.entity.Task">
+        <id column="id" property="id"/>
+        <result column="task_id" property="taskId"/>
+        <result column="task_name" property="taskName"/>
+        <result column="task_description" property="taskDescription"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <select id="getById" parameterType="java.lang.Long" resultMap="taskMap">
+        select * from task where task_id = #{taskId}
+    </select>
+
+    <insert id="save" parameterType="com.code.entity.Task">
+        INSERT INTO task
+        (task_id,task_name,task_description,gmt_create,gmt_modified)
+        VALUES(#{taskId},#{taskName},#{taskDescription},#{gmtCreate},#{gmtModified})
+
+        <selectKey keyProperty="id" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+</mapper>

@@ -1,6 +1,7 @@
 package com.code.executor.statement;
 
 import com.code.executor.Executor;
+import com.code.executor.keygen.KeyGenerator;
 import com.code.mapping.BoundSql;
 import com.code.mapping.MappedStatement;
 import com.code.session.ResultHandler;
@@ -44,6 +45,10 @@ public class PreparedStatementHandler extends BaseStatementHandler{
     public int update(Statement statement) throws SQLException {
         PreparedStatement preparedStatement = (PreparedStatement) statement;
         preparedStatement.execute();
-        return preparedStatement.getUpdateCount();
+        int updateCount = preparedStatement.getUpdateCount();
+        Object parameterObject = boundSql.getParameterObject();
+        KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
+        keyGenerator.processAfter(executor,mappedStatement,preparedStatement,parameterObject);
+        return updateCount;
     }
 }

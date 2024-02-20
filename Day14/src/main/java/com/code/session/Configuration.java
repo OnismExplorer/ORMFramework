@@ -6,6 +6,7 @@ import com.code.datasource.pool.PoolDataSourceFactory;
 import com.code.datasource.unpool.UnpoolDataSourceFactory;
 import com.code.executor.Executor;
 import com.code.executor.SimpleExecutor;
+import com.code.executor.keygen.KeyGenerator;
 import com.code.executor.parameter.ParameterHandler;
 import com.code.executor.resultset.DefaultResultSetHandler;
 import com.code.executor.resultset.ResultSetHandler;
@@ -89,6 +90,13 @@ public class Configuration {
      * 数据库id
      */
     protected String databaseId;
+
+    /**
+     * 使用生成键
+     */
+    protected boolean useGeneratedKeys = false;
+
+    protected final Map<String, KeyGenerator> keyGenerators = new HashMap<>();
     public Configuration() {
         typeAliasRegistry.registerAlias("JDBC", JdbcTrasactionFactory.class);
         typeAliasRegistry.registerAlias("DRUID", DruidDataSourceFactory.class);
@@ -261,4 +269,53 @@ public class Configuration {
     public ObjectFactory getObjectFactory(){
         return objectFactory;
     }
+
+    /**
+     * 添加生成器
+     *
+     * @param id           id
+     * @param keyGenerator 键生成器
+     */
+    public void addKeyGenerator(String id,KeyGenerator keyGenerator) {
+        keyGenerators.put(id,keyGenerator);
+    }
+
+    /**
+     * 获取生成器
+     *
+     * @param id id
+     * @return {@link KeyGenerator}
+     */
+    public KeyGenerator getKeyGenerator(String id) {
+        return keyGenerators.get(id);
+    }
+
+    /**
+     * 是否有生成器
+     *
+     * @param id id
+     * @return boolean
+     */
+    public boolean hasKeyGenerator(String id) {
+        return keyGenerators.containsKey(id);
+    }
+
+    /**
+     * 是否为生成键
+     *
+     * @return boolean
+     */
+    public boolean isUseGeneratedKeys() {
+        return useGeneratedKeys;
+    }
+
+    /**
+     * 设置使用生成键
+     *
+     * @param useGeneratedKeys 使用生成键
+     */
+    public void setUseGeneratedKeys(boolean useGeneratedKeys) {
+        this.useGeneratedKeys = useGeneratedKeys;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.code.executor.statement;
 
 import com.code.executor.Executor;
+import com.code.executor.keygen.KeyGenerator;
 import com.code.executor.parameter.ParameterHandler;
 import com.code.executor.resultset.ResultSetHandler;
 import com.code.mapping.BoundSql;
@@ -44,6 +45,7 @@ public abstract class BaseStatementHandler implements StatementHandler{
         this.mappedStatement = mappedStatement;
         this.parameterObject = parameterObject;
         if(boundSql == null) {
+            generateKeys(parameterObject);
             // 因为更新操作不会传入 boundSql 参数，所以这里需要进行初始化操作
             boundSql = mappedStatement.getBoundSql(parameterObject);
         }
@@ -51,6 +53,16 @@ public abstract class BaseStatementHandler implements StatementHandler{
         this.rowBounds = rowBounds;
         this.resultSetHandler = configuration.newResultSetHandler(executor,mappedStatement,rowBounds,resultHandler,boundSql);
         this.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject,boundSql);
+    }
+
+    /**
+     * 生成密钥
+     *
+     * @param parameter 参数
+     */
+    protected void generateKeys(Object parameter) {
+        KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
+        keyGenerator.processBefore(executor,mappedStatement,null,parameter);
     }
 
     @Override

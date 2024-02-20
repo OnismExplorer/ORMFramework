@@ -30,7 +30,7 @@ public class SimpleExecutor extends BaseExecutor {
         try {
             Configuration configuration = mappedStatement.getConfiguration();
             // 新建一个 StatementHandler
-            StatementHandler handler = configuration.newStatementHandler(this, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
+            StatementHandler handler = configuration.newStatementHandler(wrapper, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
             // 准备语句
             statement = prepareStatement(handler);
             // 返回结果
@@ -47,7 +47,7 @@ public class SimpleExecutor extends BaseExecutor {
         Statement statement = null;
         try {
             Configuration configuration = mappedStatement.getConfiguration();
-            // 心间 StatementHandler
+            // 新建 StatementHandler
             StatementHandler handler = configuration.newStatementHandler(this, mappedStatement, parameter, RowBounds.DEFAULT, null, null);
             // 准备语句
             statement = prepareStatement(handler);

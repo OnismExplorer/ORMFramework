@@ -9,6 +9,25 @@ import java.util.Date;
  * @date 2024/02/16
  */
 public class Task {
+    public Task() {
+    }
+
+    public Task(Long taskId, String taskName, String taskDescription, Date gmtCreate, Date gmtModified) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.gmtCreate = gmtCreate;
+        this.gmtModified = gmtModified;
+    }
+
+    public Task(Long id, Long taskId, String taskName, String taskDescription, Date gmtCreate, Date gmtModified) {
+        this.id = id;
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.gmtCreate = gmtCreate;
+        this.gmtModified = gmtModified;
+    }
 
     /**
      * id(主键，自增)

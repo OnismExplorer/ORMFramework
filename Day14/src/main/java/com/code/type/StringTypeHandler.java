@@ -20,4 +20,9 @@ public class StringTypeHandler extends BaseTypeHandler<String>{
     protected String getNullableResult(ResultSet resultSet, String columnName) throws SQLException {
         return resultSet.getString(columnName);
     }
+
+    @Override
+    public String getNullableResult(ResultSet resultSet, int columnIndex) throws SQLException {
+        return resultSet.getString(columnIndex);
+    }
 }

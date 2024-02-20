@@ -44,6 +44,16 @@ public final class TypeHandlerRegistry {
     private <T> void register(Type javaType,TypeHandler<? extends T> typeHandler) {
         register(javaType,null,typeHandler);
     }
+
+    /**
+     * 注册
+     *
+     * @param jdbcType jdbc类型
+     * @param handler  处理程序
+     */
+    public void register(JdbcType jdbcType,TypeHandler<?> handler) {
+        JDBC_TYPE_HANDLER_MAP.put(jdbcType,handler);
+    }
     /**
      * 注册类型处理器，将 Java 类型、JDBC 类型以及对应的类型处理器关联起来。
      *

@@ -194,7 +194,6 @@ public class DefaultResultSetHandler implements ResultSetHandler{
         boolean foundValues = false;
         try {
             final List<String> mappedColumnNames = wrapper.getMappedColumnNames(resultMap, columnPrefix);
-            foundValues = false;
             final List<ResultMapping> propertyMappings = resultMap.getResultMappings();
             for (ResultMapping propertyMapping : propertyMappings) {
                 final String column = propertyMapping.getColumn();
@@ -286,21 +285,59 @@ public class DefaultResultSetHandler implements ResultSetHandler{
      * @param columnPrefix 列前缀
      * @return {@link Object}
      */
-    private Object createResultObject(ResultSetWrapper wrapper, ResultMap resultMap, String columnPrefix) {
+    private Object createResultObject(ResultSetWrapper wrapper, ResultMap resultMap, String columnPrefix) throws SQLException {
         final List<Class<?>> constructorArgTypes = new ArrayList<>();
         final List<Object> constructorArgs = new ArrayList<>();
         return createResultObject(wrapper,resultMap,constructorArgTypes,constructorArgs,columnPrefix);
     }
 
-    private Object createResultObject(ResultSetWrapper wrapper, ResultMap resultMap, List<Class<?>> constructorArgTypes, List<Object> constructorArgs, String columnPrefix) {
+    private Object createResultObject(ResultSetWrapper wrapper, ResultMap resultMap, List<Class<?>> constructorArgTypes, List<Object> constructorArgs, String columnPrefix) throws SQLException {
         final Class<?> resultType = resultMap.getType();
         final MetaClass metaType = MetaClass.forClass(resultType);
-        if(resultType.isInterface() || metaType.hasDefaultConstructor()) {
-            // 返回普通的 Bean 对象类型
+        if (typeHandlerRegistry.hasTypeHandler(resultType)) {
+            // 基本类型
+            return createPrimitiveResultObject(wrapper, resultMap, columnPrefix);
+        } else if (resultType.isInterface() || metaType.hasDefaultConstructor()) {
+            // 普通的Bean对象类型
             return objectFactory.create(resultType);
         }
         throw new RuntimeException("不知道如何创建 " + resultType + " 类型的实例。");
     }
 
+    /**
+     * 创建原语结果对象
+     *
+     * @param wrapper      包装器
+     * @param resultMap    结果图
+     * @param columnPrefix 列前缀
+     * @return {@link Object}
+     * @throws SQLException sqlexception异常
+     */
+    private Object createPrimitiveResultObject(ResultSetWrapper wrapper,ResultMap resultMap,String columnPrefix) throws SQLException {
+        final Class<?> resultType = resultMap.getType();
+        final String columnName;
+        if(!resultMap.getResultMappings().isEmpty()) {
+            final List<ResultMapping> resultMappingList = resultMap.getResultMappings();
+            final ResultMapping mapping = resultMappingList.get(0);
+            columnName = prependPrefix(mapping.getColumn(),columnPrefix);
+        } else {
+            columnName = wrapper.getColumnNames().get(0);
+        }
+        final TypeHandler<?> typeHandler = wrapper.getTypeHandler(resultType,columnName);
+        return typeHandler.getResult(wrapper.getResultSet(),columnName);
+    }
 
+    /**
+     * 预先考虑前缀
+     *
+     * @param columnName       列
+     * @param columnPrefix 列前缀
+     * @return {@link String}
+     */
+    private String prependPrefix(String columnName, String columnPrefix) {
+        if(columnName == null || columnName.length() == 0 || columnPrefix == null || columnPrefix.length() == 0) {
+            return columnName;
+        }
+        return columnPrefix + columnName;
+    }
 }

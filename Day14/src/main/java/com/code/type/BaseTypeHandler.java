@@ -50,4 +50,19 @@ public abstract class BaseTypeHandler<T> implements TypeHandler<T>{
      * @throws SQLException sqlexception异常
      */
     protected abstract T getNullableResult(ResultSet resultSet, String columnName) throws SQLException;
+
+    @Override
+    public T getResult(ResultSet resultSet, int columnIndex) throws SQLException {
+        return getNullableResult(resultSet,columnIndex);
+    }
+
+    /**
+     * 获取可空结果
+     *
+     * @param resultSet   结果集
+     * @param columnIndex 列索引
+     * @return {@link T}
+     * @throws SQLException sqlexception异常
+     */
+    public abstract T getNullableResult(ResultSet resultSet, int columnIndex) throws SQLException;
 }

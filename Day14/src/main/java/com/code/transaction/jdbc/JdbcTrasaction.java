@@ -31,6 +31,10 @@ public class JdbcTrasaction implements Transaction {
 
     @Override
     public Connection getConnection() throws SQLException {
+        // 只有当多个 SQL 在同一个数据源连接下，才能完成事务的特性
+        if(connection != null) {
+            return connection;
+        }
         connection = dataSource.getConnection();
         connection.setTransactionIsolation(level.getLevel());
         connection.setAutoCommit(autoCommit);

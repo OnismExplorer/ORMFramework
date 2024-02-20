@@ -1,8 +1,12 @@
 package com.code.mapping;
 
+import com.code.executor.keygen.Jdbc3KeyGenerator;
+import com.code.executor.keygen.KeyGenerator;
+import com.code.executor.keygen.NoKeyGenerator;
 import com.code.script.LanguageDriver;
 import com.code.session.Configuration;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +31,23 @@ public class MappedStatement {
 
     private List<ResultMap> resultMaps;
 
+    private String resource;
+
+    /**
+     * 键生成器
+     */
+    private KeyGenerator keyGenerator;
+
+    /**
+     * 关键属性
+     */
+    private String[] keyProperties;
+
+    /**
+     * 键列
+     */
+    private String[] keyColumns;
+
 
     /**
      * 默认构造器
@@ -50,11 +71,13 @@ public class MappedStatement {
             mappedStatement.sqlSource = sqlSource;
             mappedStatement.resultType = resultType;
             mappedStatement.languageDriver = configuration.getDefaultScriptLanguageInstance();
+            mappedStatement.keyGenerator = configuration.isUseGeneratedKeys() && SqlCommandType.INSERT.equals(sqlCommandType) ? new Jdbc3KeyGenerator() : new NoKeyGenerator();
         }
 
         public MappedStatement build(){
             assert mappedStatement.configuration != null;
             assert mappedStatement.id != null;
+            mappedStatement.resultMaps = Collections.unmodifiableList(mappedStatement.resultMaps);
             return mappedStatement;
         }
 
@@ -66,6 +89,34 @@ public class MappedStatement {
             mappedStatement.resultMaps = resultMaps;
             return this;
         }
+
+        public Builder resource(String resource) {
+            mappedStatement.resource = resource;
+            return this;
+        }
+
+        public Builder keyGenerator(KeyGenerator keyGenerator) {
+            mappedStatement.keyGenerator = keyGenerator;
+            return this;
+        }
+
+        public Builder keyProperty(String keyProperty) {
+            mappedStatement.keyProperties = delimitedStringToArray(keyProperty);
+            return this;
+        }
+    }
+
+    /**
+     * 分隔字符串到数组
+     *
+     * @param str str
+     * @return {@link String[]}
+     */
+    private static String[] delimitedStringToArray(String str) {
+        if(str == null || str.trim().length() == 0) {
+            return null;
+        }
+        return str.split(",");
     }
 
     public BoundSql getBoundSql(Object parameterObject) {
@@ -97,5 +148,21 @@ public class MappedStatement {
 
     public List<ResultMap> getResultMaps() {
         return resultMaps;
+    }
+
+    public String getResource() {
+        return resource;
+    }
+
+    public KeyGenerator getKeyGenerator() {
+        return keyGenerator;
+    }
+
+    public String[] getKeyProperties() {
+        return keyProperties;
+    }
+
+    public String[] getKeyColumns() {
+        return keyColumns;
     }
 }

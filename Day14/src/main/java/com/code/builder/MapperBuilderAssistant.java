@@ -1,5 +1,6 @@
 package com.code.builder;
 
+import com.code.executor.keygen.KeyGenerator;
 import com.code.mapping.*;
 import com.code.reflection.MetaClass;
 import com.code.script.LanguageDriver;
@@ -76,10 +77,14 @@ public class MapperBuilderAssistant extends BaseBuilder{
      * @param languageDriver 语言司机
      * @return {@link MappedStatement}
      */
-    public MappedStatement addMappedStatement(String id, SqlSource sqlSource, SqlCommandType sqlCommandType, Class<?> parameterType, String resultMap, Class<?> resultType, LanguageDriver languageDriver) {
+    public MappedStatement addMappedStatement(String id, SqlSource sqlSource, SqlCommandType sqlCommandType,Class<?> parameterType, String resultMap, Class<?> resultType, KeyGenerator keyGenerator,String keyProperty, LanguageDriver languageDriver) {
         // 为id加上namespace前缀(com.code.test.dao.UserDao.getUserById)
         id = applyCurrentNameSpace(id,false);
         MappedStatement.Builder builder = new MappedStatement.Builder(configuration, id, sqlCommandType, sqlSource, resultType);
+        builder.resource(resource);
+        builder.keyGenerator(keyGenerator);
+        builder.keyProperty(keyProperty);
+
         // 结果映射
         setStatementResultMap(resultMap,resultType,builder);
 

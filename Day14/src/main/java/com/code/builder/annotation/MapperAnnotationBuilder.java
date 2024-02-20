@@ -3,6 +3,9 @@ package com.code.builder.annotation;
 import com.code.annotations.*;
 import com.code.binding.MapperMethod;
 import com.code.builder.MapperBuilderAssistant;
+import com.code.executor.keygen.Jdbc3KeyGenerator;
+import com.code.executor.keygen.KeyGenerator;
+import com.code.executor.keygen.NoKeyGenerator;
 import com.code.mapping.SqlCommandType;
 import com.code.mapping.SqlSource;
 import com.code.script.LanguageDriver;
@@ -88,6 +91,14 @@ public class MapperAnnotationBuilder {
             // 获取 SQL 命令类型
             SqlCommandType sqlCommandType = getSqlCommandType(method);
 
+            KeyGenerator keyGenerator;
+            String keyProperty = "id";
+            if(SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
+                keyGenerator = configuration.isUseGeneratedKeys() ? new Jdbc3KeyGenerator() : new NoKeyGenerator();
+            } else {
+                keyGenerator = new NoKeyGenerator();
+            }
+
             // 判断是否为查询操作
             boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 
@@ -105,6 +116,8 @@ public class MapperAnnotationBuilder {
                     parameterTypeClass,
                     resultMapId,
                     getReturnType(method),
+                    keyGenerator,
+                    keyProperty,
                     driver
             );
         }

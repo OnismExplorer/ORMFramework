@@ -6,4 +6,5 @@ import com.code.entity.Task;
 public interface TaskDao {
 
     Task getById(Long taskId);
+    void save(Task task);
 }

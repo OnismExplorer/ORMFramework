@@ -34,6 +34,17 @@ public interface Executor {
     <E> List<E> query(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql);
 
     /**
+     * 查询
+     *
+     * @param mappedStatement 映射语句
+     * @param parameter       参数
+     * @param rowBounds       行范围
+     * @param resultHandler   结果处理程序
+     * @return {@link List}<{@link E}>
+     */
+    <E> List<E> query(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler);
+
+    /**
      * 更新数据(返回受影响行数)
      *
      * @param mappedStatement 映射语句

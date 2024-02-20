@@ -32,4 +32,14 @@ public interface TypeHandler<T> {
      * @throws SQLException sqlexception异常
      */
     T getResult(ResultSet resultSet,String columnName) throws SQLException;
+
+    /**
+     * 获取结果
+     *
+     * @param resultSet   结果集
+     * @param columnIndex 列索引
+     * @return {@link T}
+     * @throws SQLException sqlexception异常
+     */
+    T getResult(ResultSet resultSet,int columnIndex) throws SQLException;
 }

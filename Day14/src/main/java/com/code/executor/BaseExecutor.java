@@ -51,6 +51,12 @@ public abstract class BaseExecutor implements Executor{
     }
 
     @Override
+    public <E> List<E> query(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) {
+        BoundSql boundSql = mappedStatement.getBoundSql(parameter);
+        return query(mappedStatement,parameter,rowBounds,resultHandler,boundSql);
+    }
+
+    @Override
     public int update(MappedStatement mappedStatement, Object parameter) throws SQLException {
         return doUpdate(mappedStatement,parameter);
     }

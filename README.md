@@ -326,3 +326,9 @@ public class DefaultResultSetHandler implements ResultSetHandler{
 &emsp;&emsp;因为命名规范的不同，数据库是按照小写英文字母和下划线的形式组合使用(例如，task_name)，而 Java 代码中则是采用驼峰方式进行命名(例如，taskName)，所以会导致一些字段无法进行一一对应。<br>
 &emsp;&emsp;这便是下一个需要解决的问题，在使用 Mybatis 时，如果遇到这种字段，则需要把数据库表中的下划线字段名称映射成 Java 代码中的驼峰字段，这样才能正确的将数据库中的结果映射到 Java 代码的返回对象。<br>
 &emsp;&emsp;在前面章节处理解析 Mapper XML 中的 select 语句下配置的 resultType 时，其实就已经添加了 ResultMap、ResultMapping 的映射结构。但是在前面章节对于返回类型的处理都直接是对象类型，没有使用映射类型。为了做统一的方式处理，才会采用这样通用的结果类型包装结构。<br>
+
+### 第十四章
+&emsp;&emsp;目前的框架只能执行 CRUD 的一条语句。尽管这样已经能够满足大部分开发需求，但是在 Mybatis 中，执行插入语句后会返回该条插入语句后的自增索引，方便后续的操作。<br>
+&emsp;&emsp;这样就会涉及到两条 SQL 的连续执行，这必须保证在同一个数据库连接下，否则返回的自增ID将会是0值(失去事务的特征)<br>
+&emsp;&emsp;需要在执行插入 SQL 后返回插入的索引值，那么就需要在 insert 标签中新增 selectKey 标签，并在 selectKey 标签中执行查询数据库索引的操作。<br>
+&emsp;&emsp;将 selectKey 解析完成后，后续操作与解析其他类型标签一致，按照 MappedStatement 映射器语句存放到 Configuration 配置项中，再执行 DefaultSqlSession 获取 SQL 时就可以从配置项中获取，并在执行器中完成 SQL 的操作<br>

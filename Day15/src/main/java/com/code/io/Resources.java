@@ -21,7 +21,7 @@ public class Resources {
      * @return {@link Reader}
      * @throws IOException ioexception
      */
-    public static Reader getResourceAsReader(String resource) throws IOException{
+    public static Reader getResourceAsReader(String resource) throws IOException {
         return new InputStreamReader(getResourceAsStream(resource));
     }
 
@@ -36,25 +36,21 @@ public class Resources {
         ClassLoader[] classLoaders = getClassLoaders();
         for (ClassLoader loader : classLoaders) {
             InputStream inputStream = loader.getResourceAsStream(resource);
-            if(inputStream != null){
+            if (inputStream != null) {
                 return inputStream;
             }
         }
-        throw new IOException("没有找到资源："+resource);
+        throw new IOException("没有找到资源：" + resource);
     }
 
-    private static ClassLoader[] getClassLoaders(){
+    private static ClassLoader[] getClassLoaders() {
         return new ClassLoader[]{
                 ClassLoader.getSystemClassLoader(),
                 Thread.currentThread().getContextClassLoader()
         };
     }
 
-    public static Class<?> classForName(String namespace) {
-        try {
-            return Class.forName(namespace);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("未找到该类："+e);
-        }
+    public static Class<?> classForName(String namespace) throws ClassNotFoundException {
+        return Class.forName(namespace);
     }
 }

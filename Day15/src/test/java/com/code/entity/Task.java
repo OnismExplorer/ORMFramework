@@ -12,6 +12,11 @@ public class Task {
     public Task() {
     }
 
+    public Task(Long id, String taskName) {
+        this.id = id;
+        this.taskName = taskName;
+    }
+
     public Task(Long taskId, String taskName, String taskDescription, Date gmtCreate, Date gmtModified) {
         this.taskId = taskId;
         this.taskName = taskName;

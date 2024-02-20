@@ -115,7 +115,11 @@ public class ResultSetWrapper {
      * @return {@link Class}<{@link ?}>
      */
     public Class<?> resolveClass(String className) {
-        return Resources.classForName(className);
+        try {
+            return Resources.classForName(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("未找到此类 "+className+"："+e);
+        }
     }
 
     /**

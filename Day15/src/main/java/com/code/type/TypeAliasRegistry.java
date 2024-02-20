@@ -44,7 +44,11 @@ public class TypeAliasRegistry {
         if (TYPE_ALIASES.containsKey(key)) {
             value = (Class<T>) TYPE_ALIASES.get(key);
         } else {
-            value = (Class<T>) Resources.classForName(string);
+            try {
+                value = (Class<T>) Resources.classForName(string);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("未找到此类 "+string+"："+e);
+            }
         }
         return value;
 

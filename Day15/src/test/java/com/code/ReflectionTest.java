@@ -45,36 +45,22 @@ public class ReflectionTest {
     }
 
     @Test
-    public void saveTest() {
+    public void GetByIdAndNameTest() {
         TaskDao taskDao = sqlSession.getMapper(TaskDao.class);
+        // 模糊查询
+        Task t1 = new Task(null, "任务%");
+        List<Task> list = taskDao.getByIdAndName(t1);
+        for (Task task : list) {
+            System.out.println(JSON.toJSONString(task));
+        }
 
-        Task task = new Task(100003L, "任务三", "这是第三个任务", new Date(), new Date());
-        taskDao.save(task);
-        sqlSession.commit();
-    }
+        System.out.println("-----------------------------------------------");
 
-    @Test
-    public void SaveSelectTest() throws IOException {
-        // 解析 XML
-        Reader reader = Resources.getResourceAsReader("datasource.xml");
-        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder(reader);
-        Configuration configuration = xmlConfigBuilder.parse();
-
-        // 获取 DefaultSqlSession
-        final Environment environment = configuration.getEnvironment();
-        TransactionFactory transactionFactory = environment.transactionFactory();
-        Transaction tx = transactionFactory.newTransaction(configuration.getEnvironment().dataSource(), TransactionIsolationLevel.READ_COMMITTED, false);
-
-        // 创建执行器
-        final Executor executor = configuration.newExecutor(tx);
-        SqlSession sqlSession = new DefaultSqlSession(configuration, executor);
-
-        Task task = new Task(100004L, "任务四", "这是第四个任务", new Date(), new Date());
-        int count = sqlSession.insert("com.code.dao.TaskDao.save", task);
-
-        Object o = sqlSession.selectOne("com.code.dao.TaskDao.save!selectKey");
-        System.out.println("count："+count);
-        System.out.println("index:"+JSON.toJSONString(o));
-        sqlSession.commit();
+        // id查询
+        Task t2 = new Task(1L, "任务%");
+        List<Task> list1 = taskDao.getByIdAndName(t2);
+        for (Task task : list1) {
+            System.out.println(JSON.toJSONString(task));
+        }
     }
 }

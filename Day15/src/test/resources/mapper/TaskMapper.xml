@@ -16,13 +16,14 @@
         select * from task where task_id = #{taskId}
     </select>
 
-    <insert id="save" parameterType="com.code.entity.Task">
-        INSERT INTO task
-        (task_id,task_name,task_description,gmt_create,gmt_modified)
-        VALUES(#{taskId},#{taskName},#{taskDescription},#{gmtCreate},#{gmtModified})
-
-        <selectKey keyProperty="id" order="AFTER" resultType="long">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-    </insert>
+    <select id="getByIdAndName" parameterype="com.code.entity.Task" resultMap="taskMap">
+        SELECT *
+        FROM task
+        WHERE task_name LIKE #{taskName}
+        <trim prefix="AND" prefixOverrides="OR">
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </trim>
+    </select>
 </mapper>

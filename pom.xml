@@ -24,6 +24,7 @@
     <module>Day12</module>
     <module>Day13</module>
     <module>Day14</module>
+    <module>Day15</module>
   </modules>
 
   <properties>
@@ -76,7 +77,9 @@
     <dependency>
       <groupId>ognl</groupId>
       <artifactId>ognl</artifactId>
-      <version>3.3.2</version>
+      <version>3.0.8</version>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>

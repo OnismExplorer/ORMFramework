@@ -332,3 +332,22 @@ public class DefaultResultSetHandler implements ResultSetHandler{
 &emsp;&emsp;这样就会涉及到两条 SQL 的连续执行，这必须保证在同一个数据库连接下，否则返回的自增ID将会是0值(失去事务的特征)<br>
 &emsp;&emsp;需要在执行插入 SQL 后返回插入的索引值，那么就需要在 insert 标签中新增 selectKey 标签，并在 selectKey 标签中执行查询数据库索引的操作。<br>
 &emsp;&emsp;将 selectKey 解析完成后，后续操作与解析其他类型标签一致，按照 MappedStatement 映射器语句存放到 Configuration 配置项中，再执行 DefaultSqlSession 获取 SQL 时就可以从配置项中获取，并在执行器中完成 SQL 的操作<br>
+
+### 第十五章
+&emsp;&emsp;现在框架解析的一直都是 Mapper XML 中配置的静态 SQL，一条完整的 SQL 语句。<br>
+&emsp;&emsp;但是在实际开发使用场景，我们都需要先根据入参对象中的字段是否有值，然后才会被设置在 SQL 语句中，例如 select * from task where id = ? and (task_name is null or task_name like '任务%')查询语句，根据给定的id值筛选记录，并且当task_name不为空时，进行与'任务%'的LIKE匹配<br>
+&emsp;&emsp;<select id="getTaskByIdAndName" parameterype="com.code.entity.Task" resultMap="taskMap">
+SELECT *
+FROM task
+WHERE id = #{id}
+<trim prefix="AND" prefixOverrides="OR">
+<if test="taskName != null and taskName != ''">
+task_name LIKE #{taskName}
+</if>
+</trim>
+</select>上面的查询语句配置在 Mapper XML 中则为<br>
+```xml
+
+```
+&emsp;&emsp;使用了 <trim> 标签，通过 prefix 属性设置了前缀（在这里是 AND），通过 prefixOverrides 属性设置了要忽略的前缀（在这里是 OR）。这样，如果动态条件为空， <trim> 标签会正确地处理 SQL 语句，避免不必要的 AND。<br>
+&emsp;&emsp;本章节则将对上述出现的标签进行解析，在 XML 脚本构建器中扩充对动态 SQL 的处理，使得框架可以配置拼接 SQL 语句<br>

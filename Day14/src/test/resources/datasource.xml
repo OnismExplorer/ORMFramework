@@ -10,7 +10,7 @@
             <!--使用连接池-->
             <dataSource type="POOL">
                 <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useUnicode=true&amp;useSSL=false"/><!--这里的&amp;是&的转移字符，因为&在xml有特殊含义，所以需要转义-->
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useUnicode=true&amp;useSSL=false&amp;characterEncoding=utf8"/><!--这里的&amp;是&的转移字符，因为&在xml有特殊含义，所以需要转义-->
                 <property name="username" value="root"/>
                 <property name="password" value="123456"/>
             </dataSource>

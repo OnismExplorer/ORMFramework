@@ -1,5 +1,6 @@
 package com.code.executor.statement;
 
+import com.code.mapping.BoundSql;
 import com.code.session.ResultHandler;
 
 import java.sql.Connection;
@@ -50,4 +51,11 @@ public interface StatementHandler {
      * @throws SQLException sqlexception异常
      */
     int update(Statement statement) throws SQLException;
+
+    /**
+     * 获取绑定 SQL
+     *
+     * @return {@link BoundSql}
+     */
+    BoundSql getBoundsql();
 }

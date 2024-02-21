@@ -16,6 +16,8 @@ import com.code.mapping.BoundSql;
 import com.code.mapping.Environment;
 import com.code.mapping.MappedStatement;
 import com.code.mapping.ResultMap;
+import com.code.plugin.Interceptor;
+import com.code.plugin.InterceptorChain;
 import com.code.reflection.MetaObject;
 import com.code.reflection.factory.DefaultObjectFactory;
 import com.code.reflection.factory.ObjectFactory;
@@ -97,6 +99,11 @@ public class Configuration {
     protected boolean useGeneratedKeys = false;
 
     protected final Map<String, KeyGenerator> keyGenerators = new HashMap<>();
+
+    /**
+     * 拦截器链
+     */
+    private final InterceptorChain interceptorChain = new InterceptorChain();
     public Configuration() {
         typeAliasRegistry.registerAlias("JDBC", JdbcTrasactionFactory.class);
         typeAliasRegistry.registerAlias("DRUID", DruidDataSourceFactory.class);
@@ -203,7 +210,11 @@ public class Configuration {
      * @return {@link StatementHandler}
      */
     public StatementHandler newStatementHandler(Executor executor,MappedStatement mappedStatement,Object parameter,RowBounds rowBounds,ResultHandler resultHandler,BoundSql boundSql) {
-        return new PreparedStatementHandler(executor,mappedStatement,parameter,rowBounds,resultHandler,boundSql);
+        // 创建语句处理器，Mybatis 添加路由 STATEMENT、PREPARED、CALLABLE ，默认只根据预处理进行实例化
+        StatementHandler statementHandler = new PreparedStatementHandler(executor, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
+        // 嵌入插件，代理对象
+        statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
+        return statementHandler;
     }
 
     /**
@@ -318,4 +329,7 @@ public class Configuration {
         this.useGeneratedKeys = useGeneratedKeys;
     }
 
+    public void addInterceptor(Interceptor interceptor) {
+        interceptorChain.addInterceptor(interceptor);
+    }
 }

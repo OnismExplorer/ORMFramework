@@ -351,3 +351,9 @@ task_name LIKE #{taskName}
 ```
 &emsp;&emsp;使用了 <trim> 标签，通过 prefix 属性设置了前缀（在这里是 AND），通过 prefixOverrides 属性设置了要忽略的前缀（在这里是 OR）。这样，如果动态条件为空， <trim> 标签会正确地处理 SQL 语句，避免不必要的 AND。<br>
 &emsp;&emsp;本章节则将对上述出现的标签进行解析，在 XML 脚本构建器中扩充对动态 SQL 的处理，使得框架可以配置拼接 SQL 语句<br>
+
+### 第十六章
+&emsp;&emsp;到目前为止，ORM框架已经能够满足绝大多数情况下的开发使用需求。<br>
+&emsp;&emsp;在 Mybatis 框架中，Plugin 插件功能也是一个非常重要的功能点，可以结合插件进行一个扩展，例如分页、监控日志、数据库/表路由等。<br>
+&emsp;&emsp;这些核心功能的扩展，都是源于 Mybatis Plugin 提供对类的代理扩展，并在代理中调用自定义插件的逻辑行为。<br>
+&emsp;&emsp;Mybatis Plugin 插件功能是一种 DI(依赖倒置)实现设计，使插件的功能依赖于抽象接口，而不依赖于具体实现，降低用户与实现模块间的耦合。<br>

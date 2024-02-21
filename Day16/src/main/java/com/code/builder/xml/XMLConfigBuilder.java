@@ -4,6 +4,7 @@ import com.code.builder.BaseBuilder;
 import com.code.datasource.DataSourceFactory;
 import com.code.io.Resources;
 import com.code.mapping.Environment;
+import com.code.plugin.Interceptor;
 import com.code.session.Configuration;
 import com.code.transaction.TransactionFactory;
 import org.dom4j.Document;
@@ -47,6 +48,8 @@ public class XMLConfigBuilder extends BaseBuilder {
     public Configuration parse(){
         // 解析映射器
         try {
+            // 插件
+            pluginElement(root.element("plugins"));
             // 环境
             environmentsElement(root.element("environments"));
             // 解析映射器
@@ -123,4 +126,29 @@ public class XMLConfigBuilder extends BaseBuilder {
         }
     }
 
+    /**
+     * 允许在某一点切入映射语句执行的调度
+     *
+     * @param parent 家长。
+     * @throws Exception 异常
+     */
+    private void pluginElement(Element parent) throws Exception {
+        if(parent == null) {
+            return ;
+        }
+        List<Element> elements = parent.elements();
+        for (Element element : elements) {
+            String interceptor = element.attributeValue("interceptor");
+            // 参数配置
+            Properties properties = new Properties();
+            List<Element> propertyElementList = element.elements("property");
+            for (Element property : propertyElementList) {
+                properties.setProperty(property.attributeValue("name"), property.attributeValue("value"));
+            }
+            // 获取插件实现类并将其实例化
+            Interceptor newInstance = (Interceptor) resolveClass(interceptor).getDeclaredConstructor().newInstance();
+            newInstance.setProperties(properties);
+            configuration.addInterceptor(newInstance);
+        }
+    }
 }

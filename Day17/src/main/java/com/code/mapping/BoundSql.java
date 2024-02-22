@@ -76,4 +76,14 @@ public class BoundSql {
     public Object getAdditionalParameters(String name) {
         return metaParameters.getValue(name);
     }
+
+    /**
+     * 获取其他参数
+     *
+     * @param name 名字。
+     * @return {@link Object}
+     */
+    public Object getAdditionalParameter(String name) {
+        return metaParameters.getValue(name);
+    }
 }

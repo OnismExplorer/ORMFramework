@@ -1,5 +1,6 @@
 package com.code.executor;
 
+import com.code.cache.CacheKey;
 import com.code.mapping.BoundSql;
 import com.code.mapping.MappedStatement;
 import com.code.session.ResultHandler;
@@ -23,7 +24,7 @@ public interface Executor {
     ResultHandler NO_RESULT_HANDLER = null;
 
     /**
-     * 普通查询
+     * 普通查询(缓存)
      *
      * @param parameter       参数
      * @param resultHandler   结果处理程序
@@ -31,7 +32,7 @@ public interface Executor {
      * @param mappedStatement 映射语句
      * @return {@link List}<{@link E}>
      */
-    <E> List<E> query(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql);
+    <E> List<E> query(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql);
 
     /**
      * 查询
@@ -83,4 +84,20 @@ public interface Executor {
      * @param forceRollback 强制回滚
      */
     void close(boolean forceRollback);
+
+    /**
+     * 清除 Session 缓存
+     */
+    void clearLocalCache();
+
+    /**
+     * 创建缓存键
+     *
+     * @param mappedStatement 映射语句
+     * @param parameterObject 参数对象
+     * @param rowBounds       行范围
+     * @param boundSql        绑定sql
+     * @return {@link CacheKey}
+     */
+    CacheKey createCacheKey(MappedStatement mappedStatement,Object parameterObject,RowBounds rowBounds,BoundSql boundSql);
 }

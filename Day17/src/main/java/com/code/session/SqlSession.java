@@ -81,4 +81,14 @@ public interface  SqlSession {
      * @return {@link Configuration}
      */
     Configuration getConfiguration();
+
+    /**
+     * 关闭 session 会话
+     */
+    void close();
+
+    /**
+     * 清除 session 会话缓存
+     */
+    void clearCache();
 }

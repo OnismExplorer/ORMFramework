@@ -6,6 +6,7 @@ import com.code.io.Resources;
 import com.code.mapping.Environment;
 import com.code.plugin.Interceptor;
 import com.code.session.Configuration;
+import com.code.session.LocalCacheScope;
 import com.code.transaction.TransactionFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -48,6 +49,8 @@ public class XMLConfigBuilder extends BaseBuilder {
     public Configuration parse(){
         // 解析映射器
         try {
+            // 设置(缓存)
+            settingElement(root.element("settings"));
             // 插件
             pluginElement(root.element("plugins"));
             // 环境
@@ -150,5 +153,22 @@ public class XMLConfigBuilder extends BaseBuilder {
             newInstance.setProperties(properties);
             configuration.addInterceptor(newInstance);
         }
+    }
+
+    /**
+     * setting 元件
+     *
+     * @param element 元素
+     */
+    private void settingElement(Element element) {
+        if(element == null) {
+            return ;
+        }
+        List<Element> elements = element.elements();
+        Properties properties = new Properties();
+        for (Element e : elements) {
+            properties.setProperty(e.attributeValue("name"),e.attributeValue("value"));
+        }
+        configuration.setLocalCacheScope(LocalCacheScope.valueOf(properties.getProperty("localCacheScope")));
     }
 }

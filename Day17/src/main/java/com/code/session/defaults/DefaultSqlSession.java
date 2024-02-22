@@ -43,7 +43,7 @@ public class DefaultSqlSession implements SqlSession {
     @Override
     public <T> List<T> selectList(String statement, Object parameter) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statement);
-        return executor.query(mappedStatement, parameter, RowBounds.DEFAULT, Executor.NO_RESULT_HANDLER, mappedStatement.getSqlSource().getBoundSql(parameter));
+        return executor.query(mappedStatement, parameter, RowBounds.DEFAULT, Executor.NO_RESULT_HANDLER);
     }
 
     @Override
@@ -85,6 +85,16 @@ public class DefaultSqlSession implements SqlSession {
     @Override
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public void close() {
+        executor.close(true);
+    }
+
+    @Override
+    public void clearCache() {
+        executor.clearLocalCache();
     }
 
 }

@@ -101,6 +101,11 @@ public class Configuration {
     protected final Map<String, KeyGenerator> keyGenerators = new HashMap<>();
 
     /**
+     * 本地缓存机制(默认情况为 session)
+     */
+    protected LocalCacheScope localCacheScope = LocalCacheScope.SESSION;
+
+    /**
      * 拦截器链
      */
     private final InterceptorChain interceptorChain = new InterceptorChain();
@@ -331,5 +336,13 @@ public class Configuration {
 
     public void addInterceptor(Interceptor interceptor) {
         interceptorChain.addInterceptor(interceptor);
+    }
+
+    public LocalCacheScope getLocalCacheScope() {
+        return localCacheScope;
+    }
+
+    public void setLocalCacheScope(LocalCacheScope localCacheScope) {
+        this.localCacheScope = localCacheScope;
     }
 }

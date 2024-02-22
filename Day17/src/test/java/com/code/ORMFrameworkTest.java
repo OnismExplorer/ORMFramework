@@ -26,5 +26,8 @@ public class ORMFrameworkTest {
     public void GetTaskTest() {
         TaskDao taskDao = sqlSession.getMapper(TaskDao.class);
         System.out.println(JSON.toJSONString(taskDao.getById(100001L)));
+
+        // 再次查询则先从缓存中获取
+        System.out.println(JSON.toJSONString(taskDao.getById(100001L)));
     }
 }

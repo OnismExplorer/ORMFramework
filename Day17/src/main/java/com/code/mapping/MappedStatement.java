@@ -48,6 +48,11 @@ public class MappedStatement {
      */
     private String[] keyColumns;
 
+    /**
+     * 是否需要刷新缓存
+     */
+    private boolean flushCacheRequired;
+
 
     /**
      * 默认构造器
@@ -164,5 +169,9 @@ public class MappedStatement {
 
     public String[] getKeyColumns() {
         return keyColumns;
+    }
+
+    public boolean isFlushCacheRequired() {
+        return flushCacheRequired;
     }
 }

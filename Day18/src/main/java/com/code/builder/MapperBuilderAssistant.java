@@ -1,5 +1,8 @@
 package com.code.builder;
 
+import com.code.cache.Cache;
+import com.code.cache.Impl.PerpetualCache;
+import com.code.cache.decorator.FIFOCache;
 import com.code.executor.keygen.KeyGenerator;
 import com.code.mapping.*;
 import com.code.reflection.MetaClass;
@@ -9,6 +12,7 @@ import com.code.type.TypeHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 映射构建器助手(建造者)
@@ -27,6 +31,11 @@ public class MapperBuilderAssistant extends BaseBuilder{
      * 资源
      */
     private String resource;
+
+    /**
+     * 当前缓存
+     */
+    private Cache currentCache;
 
     public MapperBuilderAssistant(Configuration configuration,String resource) {
         super(configuration);
@@ -77,9 +86,13 @@ public class MapperBuilderAssistant extends BaseBuilder{
      * @param languageDriver 语言司机
      * @return {@link MappedStatement}
      */
-    public MappedStatement addMappedStatement(String id, SqlSource sqlSource, SqlCommandType sqlCommandType,Class<?> parameterType, String resultMap, Class<?> resultType, KeyGenerator keyGenerator,String keyProperty, LanguageDriver languageDriver) {
+    public MappedStatement addMappedStatement(String id, SqlSource sqlSource, SqlCommandType sqlCommandType,Class<?> parameterType, String resultMap, Class<?> resultType,boolean flushCache,boolean useCache, KeyGenerator keyGenerator,String keyProperty, LanguageDriver languageDriver) {
         // 为id加上namespace前缀(com.code.test.dao.UserDao.getUserById)
         id = applyCurrentNameSpace(id,false);
+
+        // 是否为 select 语句
+        boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+
         MappedStatement.Builder builder = new MappedStatement.Builder(configuration, id, sqlCommandType, sqlSource, resultType);
         builder.resource(resource);
         builder.keyGenerator(keyGenerator);
@@ -87,11 +100,75 @@ public class MapperBuilderAssistant extends BaseBuilder{
 
         // 结果映射
         setStatementResultMap(resultMap,resultType,builder);
+        setStatementCache(isSelect,flushCache,useCache,currentCache,builder);
 
         MappedStatement statement = builder.build();
         // 映射语句信息，建造完成后存储在配置项中
         configuration.addMappedStatement(statement);
         return statement;
+    }
+
+    /**
+     * 设置语句缓存
+     *
+     * @param isSelect     是选择
+     * @param flushCache
+     * @param useCache     使用缓存
+     * @param currentCache 当前缓存
+     * @param builder      构建器
+     */
+    private void setStatementCache(boolean isSelect, boolean flushCache, boolean useCache, Cache currentCache, MappedStatement.Builder builder) {
+        flushCache = valueOrDefault(flushCache,!isSelect);
+        useCache = valueOrDefault(useCache,isSelect);
+        builder.flushCacheRequired(flushCache);
+        builder.useCache(useCache);
+        builder.cache(currentCache);
+    }
+
+
+    /**
+     * 使用新缓存
+     *
+     * @param typeClass     类型类
+     * @param evictionClass 拆迁类
+     * @param flushInterval 冲洗时间间隔
+     * @param size          大小
+     * @param readWrite     阅读写
+     * @param blocking      阻塞
+     * @param properties    属性
+     * @return {@link Cache}
+     */
+    public Cache useNewCache(Class<? extends Cache> typeClass, Class<? extends Cache> evictionClass, Long flushInterval, Integer size, boolean readWrite, boolean blocking, Properties properties) {
+        // 判断为null，则用默认值
+        typeClass = valueOrDefault(typeClass, PerpetualCache.class);
+        evictionClass = valueOrDefault(evictionClass, FIFOCache.class);
+
+        // 建造者模式构建 Cache
+        Cache cache = new CacheBuilder(currentNameSpace)
+                .implementation(typeClass)
+                .addDecorator(evictionClass)
+                .clearInterval(flushInterval)
+                .size(size)
+                .readWrite(readWrite)
+                .blocking(blocking)
+                .properties(properties)
+                .build();
+
+        // 添加缓存
+        configuration.addCache(cache);
+        currentCache = cache;
+        return cache;
+    }
+
+    /**
+     * 值或默认值
+     *
+     * @param value        价值
+     * @param defaultValue 默认值
+     * @return {@link T}
+     */
+    private <T> T valueOrDefault(T value,T defaultValue) {
+        return value == null ? defaultValue : value;
     }
 
     /**

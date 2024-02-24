@@ -21,8 +21,12 @@ public class Resources {
      * @return {@link Reader}
      * @throws IOException ioexception
      */
-    public static Reader getResourceAsReader(String resource) throws IOException {
-        return new InputStreamReader(getResourceAsStream(resource));
+    public static Reader getResourceAsReader(String resource) {
+        try {
+            return new InputStreamReader(getResourceAsStream(resource));
+        } catch (IOException e) {
+            throw new RuntimeException("获取资源时发生错误："+e,e);
+        }
     }
 
     /**

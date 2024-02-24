@@ -1,9 +1,13 @@
 package com.code.session;
 
 import com.code.binding.MapperRegistry;
+import com.code.cache.Cache;
+import com.code.cache.Impl.PerpetualCache;
+import com.code.cache.decorator.FIFOCache;
 import com.code.datasource.druid.DruidDataSourceFactory;
 import com.code.datasource.pool.PoolDataSourceFactory;
 import com.code.datasource.unpool.UnpoolDataSourceFactory;
+import com.code.executor.CacheExecutor;
 import com.code.executor.Executor;
 import com.code.executor.SimpleExecutor;
 import com.code.executor.keygen.KeyGenerator;
@@ -109,11 +113,23 @@ public class Configuration {
      * 拦截器链
      */
     private final InterceptorChain interceptorChain = new InterceptorChain();
+
+    /**
+     * 是否启用缓存(默认启用)
+     */
+    protected boolean cacheEnabled = true;
+
+    /**
+     * 缓存集
+     */
+    protected final Map<String, Cache> cacheMap = new HashMap<>();
     public Configuration() {
         typeAliasRegistry.registerAlias("JDBC", JdbcTrasactionFactory.class);
         typeAliasRegistry.registerAlias("DRUID", DruidDataSourceFactory.class);
         typeAliasRegistry.registerAlias("POOL", PoolDataSourceFactory.class);
         typeAliasRegistry.registerAlias("UNPOOL", UnpoolDataSourceFactory.class);
+        typeAliasRegistry.registerAlias("PERPETUAL", PerpetualCache.class);
+        typeAliasRegistry.registerAlias("FIFO", FIFOCache.class);
 
         languageDriverRegistry.setDefaultDriverClass(XMLLanguageDriver.class);
     }
@@ -201,7 +217,13 @@ public class Configuration {
      * @return {@link Executor}
      */
     public Executor newExecutor(Transaction transaction) {
-        return new SimpleExecutor(this,transaction);
+        Executor executor = new SimpleExecutor(this, transaction);
+        // 配置开启缓存，创建 CacheExecutor(默认就是有缓存)装饰者模式
+        if (cacheEnabled) {
+            executor = new CacheExecutor(executor);
+        }
+        return executor;
+
     }
 
     /**
@@ -345,4 +367,31 @@ public class Configuration {
     public void setLocalCacheScope(LocalCacheScope localCacheScope) {
         this.localCacheScope = localCacheScope;
     }
+
+    /**
+     * 是否启用缓存
+     *
+     * @return boolean
+     */
+    public boolean isCacheEnabled() {
+        return cacheEnabled;
+    }
+
+    /**
+     * 设置缓存启用
+     *
+     * @param cacheEnabled 缓存启用
+     */
+    public void setCacheEnabled(boolean cacheEnabled) {
+        this.cacheEnabled = cacheEnabled;
+    }
+
+    public void addCache(Cache cache) {
+        cacheMap.put(cache.getId(), cache);
+    }
+
+    public Cache getCache(String id) {
+        return cacheMap.get(id);
+    }
+
 }

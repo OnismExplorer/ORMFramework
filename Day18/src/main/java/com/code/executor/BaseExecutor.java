@@ -60,6 +60,11 @@ public abstract class BaseExecutor implements Executor {
     }
 
     @Override
+    public void setExecutorWrapper(Executor executor) {
+        this.wrapper  = wrapper;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <E> List<E> query(MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) {
         if (closed) {
@@ -246,6 +251,7 @@ public abstract class BaseExecutor implements Executor {
             System.err.println("关闭执行器时发生异常：" + e.getMessage());
         } finally {
             transaction = null;
+            localCache = null;
             closed = true;
         }
     }

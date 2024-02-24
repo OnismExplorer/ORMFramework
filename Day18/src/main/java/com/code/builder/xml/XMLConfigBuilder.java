@@ -169,6 +169,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         for (Element e : elements) {
             properties.setProperty(e.attributeValue("name"),e.attributeValue("value"));
         }
+        configuration.setCacheEnabled(booleanValueOf(properties.getProperty("cacheEnabled"),true));
         configuration.setLocalCacheScope(LocalCacheScope.valueOf(properties.getProperty("localCacheScope")));
     }
 }

@@ -1,5 +1,6 @@
 package com.code.mapping;
 
+import com.code.cache.Cache;
 import com.code.executor.keygen.Jdbc3KeyGenerator;
 import com.code.executor.keygen.KeyGenerator;
 import com.code.executor.keygen.NoKeyGenerator;
@@ -52,6 +53,10 @@ public class MappedStatement {
      * 是否需要刷新缓存
      */
     private boolean flushCacheRequired;
+
+    private Cache cache;
+
+    private boolean useCache;
 
 
     /**
@@ -107,6 +112,27 @@ public class MappedStatement {
 
         public Builder keyProperty(String keyProperty) {
             mappedStatement.keyProperties = delimitedStringToArray(keyProperty);
+            return this;
+        }
+
+        public Builder cache(Cache cache) {
+            mappedStatement.cache = cache;
+            return this;
+        }
+
+        /**
+         * 需要刷新缓存
+         *
+         * @param flushCacheRequired 需要刷新缓存
+         * @return {@link Builder}
+         */
+        public Builder flushCacheRequired(boolean flushCacheRequired) {
+            mappedStatement.flushCacheRequired = flushCacheRequired;
+            return this;
+        }
+
+        public Builder useCache(boolean useCache) {
+            mappedStatement.useCache = useCache;
             return this;
         }
     }
@@ -173,5 +199,18 @@ public class MappedStatement {
 
     public boolean isFlushCacheRequired() {
         return flushCacheRequired;
+    }
+
+    /**
+     * 是否使用缓存
+     *
+     * @return boolean
+     */
+    public boolean isUseCache() {
+        return useCache;
+    }
+
+    public Cache getCache() {
+        return cache;
     }
 }

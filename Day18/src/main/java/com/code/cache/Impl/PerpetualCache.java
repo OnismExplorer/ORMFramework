@@ -36,7 +36,7 @@ public class PerpetualCache implements Cache {
     public Object get(Object key) {
         Object object = cache.get(key);
         if (object != null) {
-            System.out.println("一级缓存命中 ===> key：" + key + " value："+ JSON.toJSONString(object));
+            System.out.println("一级缓存命中 ===> key：" + key + " \tvalue："+ JSON.toJSONString(object));
         }
         return object;
     }

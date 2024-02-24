@@ -56,6 +56,11 @@ public class XMLStatementBuilder extends BaseBuilder {
         String nodeName = element.getName();
         SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
 
+
+        boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+        boolean flushCache = Boolean.parseBoolean(element.attributeValue("flushCache",String.valueOf(!isSelect)));
+        boolean useCache = Boolean.parseBoolean(element.attributeValue("useCache",String.valueOf(!isSelect)));
+
         // 获取默认语言驱动器
         Class<?> langClass = configuration.getLanguageRegistry().getDefaultDriverClass();
         LanguageDriver languageDriver = configuration.getLanguageRegistry().getDriver(langClass);
@@ -78,7 +83,7 @@ public class XMLStatementBuilder extends BaseBuilder {
             keyGenerator = configuration.isUseGeneratedKeys() && SqlCommandType.INSERT.equals(sqlCommandType) ? new Jdbc3KeyGenerator() : new NoKeyGenerator();
         }
         // 调用助手类
-        builderAssistant.addMappedStatement(id,sqlSource,sqlCommandType,parameterTypeClass,resultMap,resultTypeClass,keyGenerator,keyProperty,languageDriver);
+        builderAssistant.addMappedStatement(id,sqlSource,sqlCommandType,parameterTypeClass,resultMap,resultTypeClass,flushCache,useCache,keyGenerator,keyProperty,languageDriver);
     }
 
     /**
@@ -124,6 +129,8 @@ public class XMLStatementBuilder extends BaseBuilder {
 
         // 默认值
         String resultMap = null;
+        boolean flushCache = false;
+        boolean useCache = false;
         KeyGenerator keyGenerator = new NoKeyGenerator();
 
         // 解析为 SqlSource，DynamicSqlSource/RawSqlSource
@@ -131,7 +138,7 @@ public class XMLStatementBuilder extends BaseBuilder {
         SqlCommandType select = SqlCommandType.SELECT;
 
         // 调用助手类
-        builderAssistant.addMappedStatement(id,sqlSource,select,parameterTypeClass,resultMap,resultTypeClass,keyGenerator,keyProperty,languageDriver);
+        builderAssistant.addMappedStatement(id,sqlSource,select,parameterTypeClass,resultMap,resultTypeClass,flushCache,useCache,keyGenerator,keyProperty,languageDriver);
 
         // 给 id 添加 namespace 前缀
         id = builderAssistant.applyCurrentNameSpace(id,false);

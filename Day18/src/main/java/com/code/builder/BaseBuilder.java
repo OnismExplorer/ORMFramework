@@ -59,4 +59,15 @@ public abstract class BaseBuilder {
         }
         return typeHandlerRegistry.getMappingTypeHandler(typeHandlerType);
     }
+
+    /**
+     * 布尔值
+     *
+     * @param value        值
+     * @param defaultValue 默认值
+     * @return {@link Boolean}
+     */
+    protected Boolean booleanValueOf(String value,Boolean defaultValue) {
+        return value == null ? defaultValue : Boolean.valueOf(value);
+    }
 }
